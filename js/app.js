@@ -4,6 +4,7 @@ const WHATSAPP_PHONE = (window.APP_CONFIG && window.APP_CONFIG.whatsappNumber) |
 const CATALOG_PRODUCTS = Array.isArray(window.products)
     ? window.products
     : (typeof productsBase !== 'undefined' && Array.isArray(productsBase) ? productsBase : []);
+const priceOptionsCache = new WeakMap();
 
 function roundUpToNearest10(value) {
     return Math.ceil(value / 10) * 10;
@@ -39,8 +40,20 @@ let state = {
     itemsPerPage: getItemsPerPage()
 };
 
+function debounce(fn, wait = 120) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), wait);
+    };
+}
+
 // --- UTILS ---
 function getPriceOptions(product) {
+    if (priceOptionsCache.has(product)) {
+        return priceOptionsCache.get(product);
+    }
+
     const numericOptions = Object.entries(product)
         .filter(([key, value]) => /^price(\d+)$/.test(key) && typeof value === 'number')
         .map(([key, value]) => {
@@ -65,7 +78,9 @@ function getPriceOptions(product) {
         }]
         : [];
 
-    return [...numericOptions, ...fullBottleOption];
+    const options = [...numericOptions, ...fullBottleOption];
+    priceOptionsCache.set(product, options);
+    return options;
 }
 
 function formatPrice(amount) {
@@ -373,30 +388,42 @@ function updateFilter(key, value, element) {
 // Event Listeners Globales
 const sidebarSearch = document.getElementById('sidebar-search');
 if(sidebarSearch) {
-    sidebarSearch.addEventListener('input', (e) => {
-        state.filters.search = e.target.value;
+    const onSidebarSearch = debounce((value) => {
+        state.filters.search = value;
         state.currentPage = 1;
         renderProducts();
+    }, 140);
+
+    sidebarSearch.addEventListener('input', (e) => {
+        onSidebarSearch(e.target.value);
     });
 }
 
 const navSearch = document.getElementById('nav-search');
 if(navSearch) {
-    navSearch.addEventListener('input', (e) => {
-        state.filters.search = e.target.value;
+    const onNavSearch = debounce((value) => {
+        state.filters.search = value;
         state.currentPage = 1;
         if(window.scrollY < 400) document.getElementById('catalogo').scrollIntoView({behavior: 'smooth'});
         renderProducts();
+    }, 140);
+
+    navSearch.addEventListener('input', (e) => {
+        onNavSearch(e.target.value);
     });
 }
 
 const priceRange = document.getElementById('price-range');
 if(priceRange) {
-    priceRange.addEventListener('input', (e) => {
-        state.filters.maxPrice = parseInt(e.target.value);
+    const onPriceChange = debounce((value) => {
+        state.filters.maxPrice = parseInt(value, 10);
         state.currentPage = 1;
         document.getElementById('price-display').innerText = `S/. ${state.filters.maxPrice}`;
         renderProducts();
+    }, 60);
+
+    priceRange.addEventListener('input', (e) => {
+        onPriceChange(e.target.value);
     });
 }
 
