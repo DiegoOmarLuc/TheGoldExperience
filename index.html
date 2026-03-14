@@ -135,7 +135,7 @@
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div class="max-w-2xl animate-fade-in-up">
                 <div class="inline-block mb-4 px-3 py-1 border border-gior-gold/30 rounded-full bg-black/40 backdrop-blur-sm">
-                    <span class="text-gior-gold text-xs font-bold tracking-widest uppercase">Nueva Colección 2025</span>
+                    <span class="text-gior-gold text-xs font-bold tracking-widest uppercase">Nueva Colección 2026</span>
                 </div>
                 <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight text-shadow-gold">
                     ELIXIR <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gior-gold via-yellow-200 to-gior-gold">DE DIOSES</span>
@@ -189,12 +189,24 @@
             <!-- BARRA LATERAL (Filtros) -->
             <div class="w-full lg:w-1/4 flex-shrink-0 space-y-8">
                 <!-- Toggle Filtros Móvil -->
-                <button class="lg:hidden w-full bg-gior-card p-4 rounded border border-gray-800 flex justify-between items-center text-white" onclick="document.getElementById('filters-container').classList.toggle('hidden')">
+                <button class="lg:hidden w-full bg-gior-card p-4 rounded border border-gray-800 flex justify-between items-center text-white" onclick="toggleMobileFilters()">
                     <span class="font-bold"><i class="fas fa-filter text-gior-gold mr-2"></i> Filtros</span>
                     <i class="fas fa-chevron-down"></i>
                 </button>
 
+                <div id="filters-overlay" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[54] hidden opacity-0 transition-opacity duration-300 lg:hidden" onclick="toggleMobileFilters(false)"></div>
+
                 <div id="filters-container" class="hidden lg:block space-y-8">
+                    <div class="lg:hidden flex items-center justify-between sticky top-0 z-10 bg-gior-card/95 backdrop-blur-md pb-4 border-b border-gray-800">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-gior-gold">Catálogo</p>
+                            <h3 class="text-white font-serif text-xl">Filtros</h3>
+                        </div>
+                        <button type="button" onclick="toggleMobileFilters(false)" class="w-10 h-10 rounded-full border border-gray-700 text-gray-300 hover:text-white hover:border-gior-gold transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
                     <!-- Widget Búsqueda -->
                     <div class="bg-gior-card border border-gray-800 p-6 rounded-sm">
                         <h3 class="text-gior-gold font-serif text-lg mb-4 flex items-center gap-2">

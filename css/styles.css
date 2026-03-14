@@ -32,13 +32,24 @@ body {
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
+.filter-conc-btn.filter-conc-btn-active,
+.filter-conc-btn.filter-conc-btn-active:hover,
+.filter-conc-btn.filter-conc-btn-active:focus {
+    background: #D4AF37;
+    color: #050505;
+    border-color: #D4AF37;
+    font-weight: 700;
+}
+
 /* Range Slider Styling */
 input[type=range] {
     -webkit-appearance: none;
+    appearance: none;
     background: transparent;
 }
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     height: 16px;
     width: 16px;
     border-radius: 50%;
@@ -67,3 +78,64 @@ input[type=range]::-webkit-slider-runnable-track {
 .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 300ms, transform 300ms; }
 .modal-exit { opacity: 1; transform: scale(1); }
 .modal-exit-active { opacity: 0; transform: scale(0.95); transition: opacity 200ms, transform 200ms; }
+
+@media (max-width: 1069px) {
+    #filters-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: min(88vw, 360px);
+        height: 100vh;
+        z-index: 55;
+        margin: 0;
+        padding: 1.25rem 1rem 2rem;
+        background: rgba(18, 18, 18, 0.98);
+        border-right: 1px solid #333333;
+        box-shadow: 24px 0 40px rgba(0, 0, 0, 0.45);
+        overflow-y: auto;
+        transform: translateX(-105%);
+        transition: transform 300ms ease;
+    }
+
+    #filters-container.mobile-open {
+        transform: translateX(0);
+    }
+
+    #filters-container .bg-gior-card {
+        background: rgba(30, 30, 30, 0.96);
+    }
+
+    #reset-filters {
+        position: sticky;
+        bottom: 0;
+        background: rgba(10, 10, 10, 0.96);
+    }
+
+    #product-grid {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 1rem;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #product-grid > .product-card {
+        flex: 0 0 min(82vw, 320px);
+        scroll-snap-align: start;
+    }
+
+    #product-grid::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    #product-grid::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    #product-grid::-webkit-scrollbar-thumb {
+        background: rgba(212, 175, 55, 0.65);
+    }
+}

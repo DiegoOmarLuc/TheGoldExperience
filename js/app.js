@@ -21,7 +21,7 @@ function getCatalogMaxPrice() {
 const CATALOG_MAX_PRICE = getCatalogMaxPrice();
 
 function getItemsPerPage() {
-    return window.innerWidth < MOBILE_BREAKPOINT ? 8 : 6;
+    return window.innerWidth < MOBILE_BREAKPOINT ? 6 : 6;
 }
 
 let state = {
@@ -252,6 +252,10 @@ function renderProducts() {
             </div>
         </div>`;
     }).join('');
+
+    if (window.innerWidth < MOBILE_BREAKPOINT) {
+        grid.scrollLeft = 0;
+    }
     
     // Renderizar Paginación
     renderPagination(totalPages, filtered.length);
@@ -299,6 +303,40 @@ function goToPage(page) {
 
 // --- INTERACTION FUNCTIONS ---
 
+function toggleMobileFilters(forceOpen) {
+    if (window.innerWidth >= MOBILE_BREAKPOINT) return;
+
+    const panel = document.getElementById('filters-container');
+    const overlay = document.getElementById('filters-overlay');
+
+    if (!panel || !overlay) return;
+
+    const isClosed = panel.classList.contains('hidden') || !panel.classList.contains('mobile-open');
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : isClosed;
+
+    if (shouldOpen) {
+        panel.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            panel.classList.add('mobile-open');
+            overlay.classList.add('opacity-100');
+            document.body.classList.add('overflow-hidden');
+        });
+        return;
+    }
+
+    panel.classList.remove('mobile-open');
+    overlay.classList.remove('opacity-100');
+    document.body.classList.remove('overflow-hidden');
+
+    window.setTimeout(() => {
+        if (window.innerWidth < MOBILE_BREAKPOINT) {
+            panel.classList.add('hidden');
+            overlay.classList.add('hidden');
+        }
+    }, 300);
+}
+
 // Filtros
 function updateFilter(key, value, element) {
     state.currentPage = 1; // Reset a primera página al filtrar
@@ -320,16 +358,13 @@ function updateFilter(key, value, element) {
         // Lógica de toggle
         if (state.filters.concentration === value) {
             state.filters.concentration = null;
-            element.classList.remove('bg-gior-gold', 'text-black', 'border-gior-gold', 'font-bold');
-            element.classList.add('bg-black', 'text-gray-400', 'border-gray-700');
+            element.classList.remove('filter-conc-btn-active');
         } else {
             state.filters.concentration = value;
             btns.forEach(b => {
-                b.classList.remove('bg-gior-gold', 'text-black', 'border-gior-gold', 'font-bold');
-                b.classList.add('bg-black', 'text-gray-400', 'border-gray-700');
+                b.classList.remove('filter-conc-btn-active');
             });
-            element.classList.remove('bg-black', 'text-gray-400', 'border-gray-700');
-            element.classList.add('bg-gior-gold', 'text-black', 'border-gior-gold', 'font-bold');
+            element.classList.add('filter-conc-btn-active');
         }
     }
     renderProducts();
@@ -385,8 +420,7 @@ if(resetBtn) {
          if(sidebarSearch) sidebarSearch.value = "";
          document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
          document.querySelectorAll('.filter-conc-btn').forEach(b => {
-             b.classList.remove('bg-gior-gold', 'text-black'); 
-             b.classList.add('bg-black', 'text-gray-400');
+             b.classList.remove('filter-conc-btn-active');
          });
          renderProducts();
     });
@@ -716,7 +750,24 @@ function initApp() {
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
+            const filtersPanel = document.getElementById('filters-container');
+            const filtersOverlay = document.getElementById('filters-overlay');
             const nextItems = getItemsPerPage();
+
+            if (window.innerWidth >= MOBILE_BREAKPOINT) {
+                document.body.classList.remove('overflow-hidden');
+                if (filtersPanel) {
+                    filtersPanel.classList.remove('mobile-open');
+                    filtersPanel.classList.remove('hidden');
+                }
+                if (filtersOverlay) {
+                    filtersOverlay.classList.add('hidden');
+                    filtersOverlay.classList.remove('opacity-100');
+                }
+            } else if (filtersPanel && !filtersPanel.classList.contains('mobile-open')) {
+                filtersPanel.classList.add('hidden');
+            }
+
             if (nextItems !== state.itemsPerPage) {
                 state.itemsPerPage = nextItems;
                 state.currentPage = 1;
