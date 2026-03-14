@@ -1,0 +1,533 @@
+﻿<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essence d'Or | Perfumes & Decants Exclusivos</title>
+    
+    <!-- 1. Librerías Externas (Tailwind, Iconos, Fuentes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- 2. Configuración de Tailwind (Colores y Fuentes) -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gior-gold': '#D4AF37',
+                        'gior-gold-light': '#F4C430',
+                        'gior-gold-dark': '#aa8c2c',
+                        'gior-black': '#050505',
+                        'gior-dark-gray': '#121212',
+                        'gior-card': '#1e1e1e',
+                        'gior-border': '#333333',
+                    },
+                    fontFamily: {
+                        'serif': ['Cinzel', 'serif'],
+                        'sans': ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'marquee': 'marquee 25s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        marquee: {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 3. Tus Estilos Personalizados (styles.css) -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-sans min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- NAVBAR -->
+    <nav class="bg-gior-dark-gray/95 backdrop-blur-md border-b border-white/5 sticky top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
+                    <div class="relative mr-3">
+                        <i class="fas fa-gem text-gior-gold text-3xl group-hover:animate-pulse"></i>
+                        <div class="absolute inset-0 bg-gior-gold blur-lg opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-serif font-bold text-white tracking-[0.15em] leading-none">ESSENCE</span>
+                        <div class="flex justify-between items-center w-full">
+                            <span class="text-xs font-serif text-gior-gold tracking-[0.35em]">D'OR</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menú Escritorio -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#" class="text-gior-gold hover:text-white px-3 py-2 text-sm font-medium transition-colors relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gior-gold hover:after:w-full after:transition-all">Inicio</a>
+                        <a href="#catalogo" class="text-gray-300 hover:text-gior-gold px-3 py-2 text-sm font-medium transition-colors">Catálogo</a>
+                        <a href="#cajas" class="text-gray-300 hover:text-gior-gold px-3 py-2 text-sm font-medium transition-colors flex items-center gap-2 group">
+                            <i class="fas fa-box-open group-hover:text-purple-400 transition-colors"></i> Mystery Boxes
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Usuario y Carrito -->
+                <div class="flex items-center gap-4">
+                    <!-- Buscador Navbar -->
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="nav-search" placeholder="Buscar..." class="bg-black/50 border border-gray-700 text-gray-300 text-xs rounded-full pl-8 pr-4 py-1.5 focus:border-gior-gold focus:outline-none w-32 focus:w-48 transition-all">
+                        <i class="fas fa-search absolute left-3 top-2 text-gray-500 text-xs"></i>
+                    </div>
+
+                    <!-- Botón Carrito -->
+                    <button class="relative p-2 text-gray-400 hover:text-gior-gold transition-colors group" onclick="toggleCart()">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold leading-none text-black bg-gior-gold rounded-full transform scale-0 transition-transform duration-200">0</span>
+                    </button>
+                    
+                    <button class="hidden md:flex items-center gap-2 bg-transparent border border-gior-gold/50 text-gior-gold hover:bg-gior-gold hover:text-black px-4 py-1.5 rounded text-xs font-bold tracking-wider transition-all duration-300 uppercase">
+                        Login
+                    </button>
+
+                    <!-- Botón Menú Móvil -->
+                    <div class="md:hidden flex items-center">
+                        <button class="text-gray-300 hover:text-white focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                            <i class="fas fa-bars text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Móvil Desplegable -->
+        <div class="hidden md:hidden bg-gior-card border-t border-gray-800" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="text-gior-gold block px-3 py-2 rounded-md text-base font-medium">Inicio</a>
+                <a href="#catalogo" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Catálogo</a>
+                <a href="#cajas" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Mystery Boxes</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION (Banner Principal) -->
+    <div class="relative bg-gior-black overflow-hidden h-[600px] flex items-center">
+        <!-- Imagen de Fondo -->
+        <div class="absolute inset-0 z-0">
+            <img src="assets/images/landscape.png" alt="Luxury Perfume" class="w-full h-full object-cover opacity-100">
+            <div class="absolute inset-0 bg-gradient-to-t from-gior-black via-gior-black/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-gior-black via-transparent to-gior-black/20"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-2xl animate-fade-in-up">
+                <div class="inline-block mb-4 px-3 py-1 border border-gior-gold/30 rounded-full bg-black/40 backdrop-blur-sm">
+                    <span class="text-gior-gold text-xs font-bold tracking-widest uppercase">Nueva Colección 2025</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight text-shadow-gold">
+                    ELIXIR <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gior-gold via-yellow-200 to-gior-gold">DE DIOSES</span>
+                </h1>
+                <p class="mb-8 text-lg text-gray-300 font-light leading-relaxed">
+                    Descubre la selección más exclusiva de perfumería Niche & Designer. 
+                    Decants auténticos para quienes buscan su firma olfativa perfecta sin compromisos.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#catalogo" class="px-8 py-3.5 bg-gior-gold text-black font-bold text-sm uppercase tracking-wider hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+                        Explorar Catálogo
+                    </a>
+                    <a href="#cajas" class="px-8 py-3.5 border border-white/30 text-white font-bold text-sm uppercase tracking-wider hover:border-gior-gold hover:text-gior-gold transition-all duration-300 backdrop-blur-sm">
+                        Mystery Boxes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador Scroll -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-gray-500">
+            <i class="fas fa-chevron-down text-xl"></i>
+        </div>
+    </div>
+
+    <!-- CINTA DE BENEFICIOS (Ticker) -->
+    <div class="bg-black border-y border-white/5 py-3 overflow-hidden relative">
+        <div class="flex whitespace-nowrap animate-marquee">
+            <div class="flex gap-12 text-xs font-medium tracking-widest text-gray-400 uppercase items-center mx-6">
+                <span><i class="fas fa-star text-gior-gold mr-2"></i> Envíos a todo el Perú</span>
+                <span><i class="fas fa-check-circle text-gior-gold mr-2"></i> 100% Originales Garantizados</span>
+                <span><i class="fas fa-gift text-gior-gold mr-2"></i> Packaging de Lujo</span>
+                <span><i class="fas fa-shield-alt text-gior-gold mr-2"></i> Compra Segura</span>
+                <span><i class="fas fa-truck text-gior-gold mr-2"></i> Envío Gratis > S/. 200</span>
+                <!-- Duplicado para efecto infinito -->
+                <span><i class="fas fa-star text-gior-gold mr-2"></i> Envíos a todo el Perú</span>
+                <span><i class="fas fa-check-circle text-gior-gold mr-2"></i> 100% Originales Garantizados</span>
+                <span><i class="fas fa-gift text-gior-gold mr-2"></i> Packaging de Lujo</span>
+                <span><i class="fas fa-shield-alt text-gior-gold mr-2"></i> Compra Segura</span>
+                <span><i class="fas fa-truck text-gior-gold mr-2"></i> Envío Gratis > S/. 200</span>
+            </div>
+        </div>
+        <div class="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-gior-black to-transparent pointer-events-none"></div>
+        <div class="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-gior-black to-transparent pointer-events-none"></div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full" id="main-content">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- BARRA LATERAL (Filtros) -->
+            <div class="w-full lg:w-1/4 flex-shrink-0 space-y-8">
+                <!-- Toggle Filtros Móvil -->
+                <button class="lg:hidden w-full bg-gior-card p-4 rounded border border-gray-800 flex justify-between items-center text-white" onclick="document.getElementById('filters-container').classList.toggle('hidden')">
+                    <span class="font-bold"><i class="fas fa-filter text-gior-gold mr-2"></i> Filtros</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+
+                <div id="filters-container" class="hidden lg:block space-y-8">
+                    <!-- Widget Búsqueda -->
+                    <div class="bg-gior-card border border-gray-800 p-6 rounded-sm">
+                        <h3 class="text-gior-gold font-serif text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-search text-sm"></i> Búsqueda
+                        </h3>
+                        <div class="relative">
+                            <input type="text" id="sidebar-search" placeholder="Buscar perfume..." class="w-full bg-black border border-gray-700 text-gray-300 text-sm p-3 focus:border-gior-gold focus:outline-none transition-colors">
+                            <i class="fas fa-search absolute right-3 top-3.5 text-gray-600"></i>
+                        </div>
+                    </div>
+
+                    <!-- Widget Tipos -->
+                    <div class="bg-gior-card border border-gray-800 p-6 rounded-sm">
+                        <h3 class="text-gior-gold font-serif text-lg mb-4">Tipo</h3>
+                        <div class="space-y-3" id="filters-type">
+                            <!-- JS Generado -->
+                        </div>
+                    </div>
+
+                    <!-- Widget Categoría -->
+                    <div class="bg-gior-card border border-gray-800 p-6 rounded-sm">
+                        <h3 class="text-gior-gold font-serif text-lg mb-4">Categoría</h3>
+                        <div class="space-y-3" id="filters-category">
+                            <!-- JS Generado -->
+                        </div>
+                    </div>
+
+                    <!-- Widget Concentración -->
+                    <div class="bg-gior-card border border-gray-800 p-6 rounded-sm">
+                        <h3 class="text-gior-gold font-serif text-lg mb-4">Concentración</h3>
+                        <div class="flex flex-wrap gap-2" id="filters-concentration">
+                            <!-- JS Generado -->
+                        </div>
+                    </div>
+
+                    <!-- Widget Precio -->
+                    <div class="bg-gior-card border border-gray-800 p-6 rounded-sm">
+                        <h3 class="text-gior-gold font-serif text-lg mb-4">Precio Máximo</h3>
+                        <input type="range" id="price-range" min="0" max="500" value="500" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-gray-500 mt-3 font-mono">
+                            <span>S/. 0</span>
+                            <span id="price-display" class="text-gior-gold font-bold">S/. 500</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón Reset -->
+                     <button id="reset-filters" class="w-full py-2 border border-gray-700 text-gray-400 hover:text-white hover:border-white transition-colors text-xs uppercase tracking-widest">
+                        Limpiar Filtros
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRILLA DE PRODUCTOS -->
+            <div class="w-full lg:w-3/4" id="catalogo">
+                
+                <!-- Barra de Herramientas -->
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 pb-4 border-b border-gray-800 gap-4">
+                    <div class="text-gray-400 text-sm">
+                        Mostrando <strong class="text-white text-lg font-serif" id="items-count">0</strong> fragancias exclusivas
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs text-gray-500 uppercase tracking-wider">Ordenar por:</span>
+                        <select id="sort-select" class="bg-black border border-gray-700 text-gray-300 text-sm py-2 px-3 focus:outline-none focus:border-gior-gold cursor-pointer hover:bg-gray-900 transition-colors">
+                            <option value="relevance">Relevancia</option>
+                            <option value="price-asc">Precio: Menor a Mayor</option>
+                            <option value="price-desc">Precio: Mayor a Menor</option>
+                            <option value="name-asc">Nombre (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Grilla (JS inyecta aquí) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" id="product-grid"></div>
+                
+                <!-- Paginación -->
+                <div id="pagination"></div>
+                
+                <!-- Estado Vacío -->
+                <div id="empty-state" class="hidden py-20 text-center">
+                    <i class="fas fa-search text-6xl text-gray-800 mb-4"></i>
+                    <h3 class="text-xl text-gray-400 font-serif">No se encontraron fragancias</h3>
+                    <p class="text-gray-600 mt-2">Intenta ajustar tus filtros de búsqueda.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN MYSTERY BOXES -->
+    <div id="cajas" class="relative py-24 border-t border-gior-border">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-gior-card via-gior-black to-gior-black opacity-50"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <div class="inline-block p-3 rounded-full bg-gior-gold/10 mb-4">
+                    <i class="fas fa-cubes text-gior-gold text-3xl"></i>
+                </div>
+                <h2 class="text-4xl font-serif font-bold text-white mb-3">MYSTERY BOXES</h2>
+                <div class="h-1 w-24 bg-gior-gold mx-auto mb-6"></div>
+                <p class="text-gray-400 max-w-2xl mx-auto">¿Indeciso? Deja que nuestros expertos curadores seleccionen las mejores fragancias para ti. Ahorra hasta un 40% con nuestras cajas misteriosas.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Box 1 -->
+                <div class="group bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-1 rounded-xl hover:border-gray-600 transition-all duration-300">
+                    <div class="bg-gior-card/50 h-full p-8 rounded-lg flex flex-col items-center text-center backdrop-blur-sm relative overflow-hidden cursor-pointer" onclick="window.location.href='pages/mystery-boxes.html?type=starter'">
+                         <div class="absolute inset-0 pointer-events-none bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                         <i class="fas fa-cube text-5xl text-gray-600 mb-6 group-hover:scale-110 transition-transform duration-500 group-hover:text-blue-400 animate-float"></i>
+                         <h3 class="text-xl font-bold text-white mb-2 font-serif">Starter Pack</h3>
+                         <div class="flex items-baseline justify-center gap-1 mb-4">
+                                     <span class="text-xs text-gray-500 line-through">S/. 189</span>
+                                     <span class="text-2xl font-bold text-blue-400">S/. 149</span>
+                         </div>
+                         <ul class="text-sm text-gray-400 space-y-2 mb-8 text-left w-full pl-4 border-l-2 border-gray-700">
+                            <li>• 3 Decants de Diseñador (5ml)</li>
+                            <li>• Selección de Versátiles</li>
+                            <li>• Ideal para principiantes</li>
+                         </ul>
+                         <a href="pages/mystery-boxes.html?type=starter" class="w-full mt-auto py-3 text-center bg-transparent border border-blue-900/50 text-blue-400 hover:bg-blue-900/20 hover:border-blue-500 transition-all uppercase text-xs font-bold tracking-widest">
+                             Ver Contenido
+                         </a>
+                    </div>
+                </div>
+
+                <!-- Box 2 (Gold) -->
+                <div class="group relative transform md:-translate-y-4">
+                    <div class="absolute -inset-0.5 bg-gradient-to-b from-gior-gold to-yellow-700 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-1000"></div>
+                    <div class="relative bg-black h-full p-8 rounded-xl flex flex-col items-center text-center border border-gior-gold/30">
+                         <div class="absolute top-0 right-0 bg-gior-gold text-black text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase">Best Seller</div>
+                         <i class="fas fa-crown text-6xl text-gior-gold mb-6 group-hover:scale-110 transition-transform duration-500 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)] animate-float"></i>
+                         <h3 class="text-2xl font-bold text-white mb-2 font-serif">Niche Elite</h3>
+                         <div class="flex items-baseline justify-center gap-1 mb-4">
+                            <span class="text-xs text-gray-500 line-through">S/. 320</span>
+                            <span class="text-3xl font-bold text-gior-gold">S/. 249.00</span>
+                         </div>
+                         <ul class="text-sm text-gray-300 space-y-2 mb-8 text-left w-full pl-4 border-l-2 border-gior-gold">
+                            <li>• 3 Decants de Lujo (Xerjoff, Creed...)</li>
+                            <li>• Concentración Extrait/EDP</li>
+                            <li>• Incluye atomizador de viaje</li>
+                         </ul>
+                         <a href="pages/mystery-boxes.html?type=niche" class="w-full mt-auto py-3 text-center bg-gior-gold text-black hover:bg-white transition-all uppercase text-xs font-bold tracking-widest shadow-lg shadow-gior-gold/20">
+                             Ver Contenido
+                         </a>
+                    </div>
+                </div>
+
+                <!-- Box 3 -->
+                <div class="group bg-gradient-to-b from-gray-900 to-black border border-gray-800 p-1 rounded-xl hover:border-purple-900 transition-all duration-300">
+                    <div class="bg-gior-card/50 h-full p-8 rounded-lg flex flex-col items-center text-center backdrop-blur-sm relative overflow-hidden cursor-pointer" onclick="window.location.href='pages/mystery-boxes.html?type=arabic'">
+                        <div class="absolute inset-0 pointer-events-none bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                         <i class="fas fa-moon text-5xl text-gray-600 mb-6 group-hover:scale-110 transition-transform duration-500 group-hover:text-purple-400 animate-float"></i>
+                         <h3 class="text-xl font-bold text-white mb-2 font-serif">Colección Árabe</h3>
+                         <div class="flex items-baseline justify-center gap-1 mb-4">
+                            <span class="text-xs text-gray-500 line-through">S/. 149</span>
+                            <span class="text-2xl font-bold text-purple-400">S/. 99.90</span>
+                         </div>
+                         <ul class="text-sm text-gray-400 space-y-2 mb-8 text-left w-full pl-4 border-l-2 border-gray-700">
+                            <li>• 3 Bestias de Proyección (Lattafa...)</li>
+                            <li>• Aromas dulces y especiados</li>
+                            <li>• Duración +10 horas</li>
+                         </ul>
+                         <a href="pages/mystery-boxes.html?type=arabic" class="w-full mt-auto py-3 text-center bg-transparent border border-purple-900/50 text-purple-400 hover:bg-purple-900/20 hover:border-purple-500 transition-all uppercase text-xs font-bold tracking-widest">
+                             Ver Contenido
+                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-gray-900 pt-16 pb-8 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-gem text-gior-gold text-xl mr-2"></i>
+                        <span class="text-lg font-serif font-bold text-white tracking-widest">ESSENCE D'OR</span>
+                    </div>
+                    <p class="text-gray-500 leading-relaxed">
+                        Redefiniendo el lujo accesible. Somos una comunidad de apasionados por la perfumería que busca traer las mejores fragancias del mundo a tu alcance.
+                    </p>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gior-gold transition-all"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gior-gold transition-all"><i class="fab fa-tiktok"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gior-gold transition-all"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-[0.2em] border-b border-gray-800 pb-2 inline-block">Soporte</h4>
+                    <ul class="space-y-3 text-gray-500">
+                        <li><a href="#" class="hover:text-gior-gold transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px]"></i> Preguntas Frecuentes</a></li>
+                        <li><a href="#" class="hover:text-gior-gold transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px]"></i> Rastrear Pedido</a></li>
+                        <li><a href="#" class="hover:text-gior-gold transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px]"></i> Garantía de Originalidad</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-[0.2em] border-b border-gray-800 pb-2 inline-block">Legal</h4>
+                    <ul class="space-y-3 text-gray-500">
+                        <li><a href="#" class="hover:text-gior-gold transition-colors">Términos y Condiciones</a></li>
+                        <li><a href="#" class="hover:text-gior-gold transition-colors">Política de Privacidad</a></li>
+                        <li><a href="#" class="hover:text-gior-gold transition-colors">Política de Reembolso</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-[0.2em] border-b border-gray-800 pb-2 inline-block">Newsletter</h4>
+                    <p class="text-gray-500 mb-4">Recibe ofertas exclusivas y drops semanales.</p>
+                    <div class="flex flex-col gap-2">
+                        <input type="email" placeholder="Tu correo electrónico" class="bg-gray-900/50 border border-gray-800 text-white text-xs px-4 py-3 w-full focus:outline-none focus:border-gior-gold rounded transition-colors">
+                        <button class="bg-gior-gold text-black font-bold uppercase text-xs px-4 py-3 rounded hover:bg-white transition-colors w-full tracking-widest">
+                            Suscribirse
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 gap-4">
+                <p>&copy; 2025 Essence d'Or. Lima, Perú.</p>
+                <div class="flex gap-4 text-xl opacity-50">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-amex"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOTÓN FLOTANTE CHAT -->
+    <a href="#" class="fixed bottom-6 right-6 z-40 bg-green-600 w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl shadow-lg hover:bg-green-500 transition-all hover:scale-110 group">
+        <i class="fab fa-whatsapp"></i>
+        <span class="absolute right-16 bg-white text-black text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">¡Contáctanos!</span>
+    </a>
+
+    <!-- SIDEBAR CARRITO (Oculto) -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden transition-opacity duration-300 opacity-0" onclick="toggleCart()"></div>
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-gior-card border-l border-gray-800 z-[70] transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="p-5 border-b border-gray-800 flex justify-between items-center bg-black/20">
+            <h2 class="text-xl font-serif font-bold text-white flex items-center gap-2"><i class="fas fa-shopping-bag text-gior-gold"></i> Tu Carrito</h2>
+            <button onclick="toggleCart()" class="text-gray-400 hover:text-white transition-colors text-xl">&times;</button>
+        </div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-4">
+            <!-- JS Generado -->
+            <div class="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
+                <i class="fas fa-shopping-basket text-5xl mb-4"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+        </div>
+
+        <div class="p-6 bg-black/40 border-t border-gray-800">
+            <div class="flex justify-between items-center mb-4 text-sm">
+                <span class="text-gray-400">Subtotal</span>
+                <span class="text-white font-bold text-lg" id="cart-total">S/. 0.00</span>
+            </div>
+            <p class="text-[10px] text-gray-500 mb-4 text-center">Impuestos y costos de envío calculados al finalizar.</p>
+            <button id="checkout-btn" class="w-full bg-gior-gold text-black font-bold py-3.5 rounded uppercase tracking-widest hover:bg-white transition-colors">
+                Finalizar Compra
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE PRODUCTO -->
+    <div id="product-modal" class="fixed inset-0 z-[80] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeProductModal()"></div>
+        <div class="relative bg-gior-card w-full max-w-4xl rounded-xl border border-gray-700 shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 text-white hover:text-gior-gold bg-black/50 w-8 h-8 rounded-full flex items-center justify-center transition-colors">&times;</button>
+            
+            <!-- Lado Imagen -->
+            <div class="w-full md:w-1/2 bg-gray-800 relative h-64 md:h-auto">
+                <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gior-card to-transparent opacity-50 md:hidden"></div>
+            </div>
+            
+            <!-- Lado Contenido -->
+            <div class="w-full md:w-1/2 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                <div id="modal-badges" class="flex gap-2 mb-3"></div>
+                <h2 id="modal-title" class="text-2xl md:text-3xl font-serif font-bold text-white mb-1"></h2>
+                <p id="modal-house" class="text-gior-gold text-sm font-bold tracking-widest uppercase mb-4"></p>
+                
+                <p id="modal-desc" class="text-gray-300 text-sm leading-relaxed mb-6 border-l-2 border-gior-gold pl-4 italic"></p>
+                
+                <div class="space-y-4 mb-8">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-widest border-b border-gray-800 pb-1">Acordes Principales</h4>
+                    <div id="modal-accords" class="space-y-2">
+                        <!-- Barras generadas JS -->
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-2">Notas Olfativas</h4>
+                    <p id="modal-notes" class="text-sm text-gray-400"></p>
+                </div>
+
+                <div class="flex items-center justify-between border-t border-gray-700 pt-6">
+                    <div class="text-2xl font-bold text-white" id="modal-price"></div>
+                    <button class="bg-gior-gold text-black px-6 py-2 rounded font-bold hover:bg-white transition-colors" id="modal-add-btn">
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toast" class="fixed bottom-6 left-6 z-[90] bg-gior-card border-l-4 border-gior-gold text-white px-6 py-4 rounded shadow-2xl transform translate-y-24 transition-transform duration-300 flex items-center gap-3">
+        <i class="fas fa-check-circle text-gior-gold text-xl"></i>
+        <div>
+            <h4 class="font-bold text-sm">¡Producto Agregado!</h4>
+            <p class="text-xs text-gray-400" id="toast-message">Se añadió a tu carrito.</p>
+        </div>
+    </div>
+
+    <!-- 4. Vinculación de Scripts con versionado por build -->
+    <script src="js/config.js"></script>
+    <script>
+        (function () {
+            const build = (window.APP_CONFIG && window.APP_CONFIG.build) || 'dev';
+
+            function loadScript(src) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = `${src}?v=${encodeURIComponent(build)}`;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.body.appendChild(script);
+                });
+            }
+
+            loadScript('js/products.js')
+                .then(() => loadScript('js/app.js'))
+                .catch((error) => console.error('Error cargando scripts versionados:', error));
+        })();
+    </script>
+</body>
+</html>

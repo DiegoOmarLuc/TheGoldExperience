@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Box Opening | Essence d'Or</title>
+    
+    <!-- Librerías (Igual que index) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <!-- Tu Configuración Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gior-gold': '#D4AF37',
+                        'gior-black': '#050505',
+                        'gior-card': '#1e1e1e',
+                        'gior-dark-gray': '#121212',
+                    },
+                    fontFamily: {
+                        'serif': ['Cinzel', 'serif'],
+                        'sans': ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Estilos específicos para la ruleta -->
+    <style>
+        body { background-color: #050505; color: #e5e5e5; }
+        
+        .roulette-container {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .item-card {
+            width: 180px;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        
+        .winning-glow {
+            animation: winPulse 2s infinite;
+        }
+
+        @keyframes winPulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+    <!-- NAVBAR SIMPLIFICADO -->
+    <nav class="bg-gior-dark-gray border-b border-white/10 py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <a href="../index.html" class="flex items-center gap-2 group">
+                <i class="fas fa-arrow-left text-gior-gold group-hover:-translate-x-1 transition-transform"></i>
+                <span class="text-white font-serif tracking-widest">VOLVER</span>
+            </a>
+            <div class="text-2xl font-serif font-bold text-white tracking-[0.15em]">ESSENCE D'OR <span class="text-gior-gold text-sm">BOXES</span></div>
+            <div class="w-20"></div> <!-- Spacer -->
+        </div>
+    </nav>
+
+    <!-- ÁREA DE APERTURA -->
+    <div class="flex-grow flex flex-col items-center justify-center py-12 relative overflow-hidden">
+        
+        <!-- Fondo Decorativo -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gior-card/50 via-gior-black to-gior-black -z-10"></div>
+
+        <!-- Título de la Caja Seleccionada -->
+        <div class="text-center mb-10 animate-fade-in">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-white mb-2" id="box-title">Niche Elite Box</h1>
+            <p class="text-gior-gold uppercase tracking-[0.3em] text-sm">Contenido Exclusivo Garantizado</p>
+        </div>
+
+        <!-- ROULETTE (EL LOOPBOX) -->
+        <div class="w-full max-w-6xl mx-auto relative mb-12">
+            <!-- Indicador Central (La línea ganadora) -->
+            <div class="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-1 bg-gior-gold z-30 shadow-[0_0_15px_#D4AF37]">
+                <div class="absolute -top-3 -left-[9px] text-gior-gold text-2xl"><i class="fas fa-caret-down"></i></div>
+                <div class="absolute -bottom-3 -left-[9px] text-gior-gold text-2xl"><i class="fas fa-caret-up"></i></div>
+            </div>
+
+            <!-- Contenedor con máscara de desvanecimiento -->
+            <div class="roulette-container w-full overflow-hidden bg-black/40 border-y border-white/10 h-[240px] relative backdrop-blur-sm">
+                
+                <!-- La tira que se mueve (Strip) -->
+                <div id="roulette-strip" class="flex items-center h-full absolute left-0 pl-[50%] transition-transform will-change-transform">
+                    <!-- Los items se generarán aquí con JS -->
+                    <div class="text-gray-500 w-full text-center mt-20">Cargando items...</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CONTROLES -->
+        <div class="text-center space-y-4 z-20">
+            <button id="spin-btn" class="group relative px-12 py-4 bg-gior-gold text-black font-bold text-lg uppercase tracking-widest hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(212,175,55,0.3)] disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="relative z-10 flex items-center gap-3">
+                    <i class="fas fa-key"></i> Abrir Caja <span id="box-price" class="text-sm bg-black/10 px-2 py-0.5 rounded">S/. 249.00</span>
+                </span>
+                <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity blur-lg"></div>
+            </button>
+            <p class="text-xs text-gray-500 mt-4">Probabilidades: Legendario 2% | Exótico 15% | Raro 35% | Común 48%</p>
+        </div>
+
+        <!-- QUÉ HAY DENTRO (Grid informativo) -->
+        <div class="mt-20 max-w-5xl mx-auto px-6 w-full">
+            <h3 class="text-center font-serif text-white text-xl mb-8 flex items-center justify-center gap-4">
+                <span class="h-px w-12 bg-gray-700"></span>
+                POSIBLES PREMIOS
+                <span class="h-px w-12 bg-gray-700"></span>
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="possible-items">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE GANADOR -->
+    <div id="winner-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity duration-500 opacity-0" id="modal-backdrop"></div>
+        <div class="relative bg-gior-card border border-gior-gold p-8 rounded-xl max-w-md w-full text-center transform scale-50 opacity-0 transition-all duration-500" id="modal-content">
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-gior-gold text-black font-bold px-6 py-2 rounded-full shadow-lg uppercase tracking-widest text-sm">
+                ¡Has Obtenido!
+            </div>
+            
+            <div class="mb-6 relative">
+                <div class="absolute inset-0 bg-gior-gold/20 blur-3xl rounded-full animate-pulse"></div>
+                <img id="winner-img" src="" class="w-48 h-48 object-contain mx-auto relative z-10 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+            </div>
+            
+            <h2 id="winner-name" class="text-2xl font-serif font-bold text-white mb-2"></h2>
+            <p id="winner-rarity" class="text-sm font-bold uppercase tracking-widest mb-6"></p>
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="window.location.reload()" class="w-full py-3 bg-gior-gold text-black font-bold uppercase tracking-widest hover:bg-white transition-colors">
+                    Abrir Otra Vez
+                </button>
+                <button onclick="window.location.href='../index.html'" class="w-full py-3 border border-gray-700 text-gray-400 font-bold uppercase tracking-widest hover:text-white hover:border-white transition-colors">
+                    Volver a la Tienda
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sonidos (Opcional) -->
+    <audio id="sound-spin" src="https://assets.mixkit.co/sfx/preview/mixkit-casino-prize-wheel-958.mp3"></audio>
+    <audio id="sound-win" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+
+    <!-- Scripts con versionado por build -->
+    <script src="../js/config.js"></script>
+    <script>
+        (function () {
+            const build = (window.APP_CONFIG && window.APP_CONFIG.build) || 'dev';
+
+            function loadScript(src) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = `${src}?v=${encodeURIComponent(build)}`;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.body.appendChild(script);
+                });
+            }
+
+            loadScript('../js/products.js')
+                .then(() => loadScript('../js/box-logic.js'))
+                .catch((error) => console.error('Error cargando scripts versionados:', error));
+        })();
+    </script>
+</body>
+</html>
