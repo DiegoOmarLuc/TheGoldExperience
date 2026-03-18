@@ -33,6 +33,7 @@ let state = {
         type: [],
         category: [],
         concentration: null,
+        gender: [],
         maxPrice: CATALOG_MAX_PRICE
     },
     sort: "relevance",
@@ -54,6 +55,7 @@ function getPriceOptions(product) {
         return priceOptionsCache.get(product);
     }
 
+    // Decants: price3, price5, price10, etc.
     const numericOptions = Object.entries(product)
         .filter(([key, value]) => /^price(\d+)$/.test(key) && typeof value === 'number')
         .map(([key, value]) => {
@@ -68,17 +70,44 @@ function getPriceOptions(product) {
         })
         .sort((a, b) => a.size - b.size);
 
-    const fullBottleOption = typeof product.pricefull === 'number'
-        ? [{
-            key: 'pricefull',
-            size: 'full',
-            label: 'Botella Completa',
-            price: product.pricefull,
-            type: 'bottle'
-        }]
-        : [];
+    // Botellas Completas: pricefull, pricefull50, pricefull100, pricefull200, etc.
+    const fullBottleOptions = Object.entries(product)
+        .filter(([key, value]) => /^pricefull(\d*)$/.test(key) && typeof value === 'number')
+        .map(([key, value]) => {
+            const match = key.match(/^pricefull(\d*)$/);
+            const sizeStr = match[1]; // Retorna string vacío si es "pricefull", o los dígitos
+            let label, size;
+            
+            if (sizeStr === '') {
+                // pricefull sin número (retrocompatibilidad)
+                label = 'Botella Completa';
+                size = 'full';
+            } else {
+                // pricefull con número (ej: pricefull100)
+                const sizeNum = parseInt(sizeStr, 10);
+                label = `Botella Completa ${sizeNum}ml`;
+                size = sizeNum;
+            }
+            
+            return {
+                key,
+                size,
+                label,
+                price: value,
+                type: 'bottle'
+            };
+        })
+        .sort((a, b) => {
+            // Ordenar: primero numéricos, luego 'full'
+            if (typeof a.size === 'number' && typeof b.size === 'number') {
+                return a.size - b.size;
+            }
+            if (typeof a.size === 'number') return -1;
+            if (typeof b.size === 'number') return 1;
+            return 0;
+        });
 
-    const options = [...numericOptions, ...fullBottleOption];
+    const options = [...numericOptions, ...fullBottleOptions];
     priceOptionsCache.set(product, options);
     return options;
 }
@@ -113,6 +142,32 @@ function renderFilters() {
         `).join('');
     }
 
+    // Géneros
+    const genders = [];
+    CATALOG_PRODUCTS.forEach(p => {
+        if (Array.isArray(p.gender)) {
+            p.gender.forEach(g => {
+                if (!genders.includes(g)) {
+                    genders.push(g);
+                }
+            });
+        }
+    });
+    
+    const genderContainer = document.getElementById('filters-gender');
+    if(genderContainer) {
+        const displayName = {
+            'Hombre': 'Para Hombre',
+            'Mujer': 'Para Mujeres'
+        };
+        genderContainer.innerHTML = genders.map(g => `
+            <label class="flex items-center space-x-2 cursor-pointer group hover:bg-white/5 p-1 rounded transition-colors">
+                <input type="checkbox" class="form-checkbox text-gior-gold rounded bg-black border-gray-700 focus:ring-0 focus:ring-offset-0" value="${g}" onchange="updateFilter('gender', this.value, this.checked)">
+                <span class="text-gray-400 text-sm group-hover:text-gior-gold transition-colors">${displayName[g] || g}</span>
+            </label>
+        `).join('');
+    }
+
     // Concentraciones
     const concentrations = [...new Set(CATALOG_PRODUCTS.map(p => p.concentration))];
     const concContainer = document.getElementById('filters-concentration');
@@ -138,12 +193,14 @@ function renderProducts() {
         const matchesType = state.filters.type.length === 0 || state.filters.type.includes(p.type);
         // Categoría
         const matchesCategory = state.filters.category.length === 0 || state.filters.category.includes(p.category);
+        // Género - verifica si alguno de los géneros del producto está en los filtros
+        const matchesGender = state.filters.gender.length === 0 || (Array.isArray(p.gender) && p.gender.some(g => state.filters.gender.includes(g)));
         // Concentración
         const matchesConc = !state.filters.concentration || p.concentration === state.filters.concentration;
         // Precio (verifica si alguna variante está dentro del presupuesto)
         const matchesPrice = isComingSoon ? true : options.some(o => o.price <= state.filters.maxPrice);
 
-        return matchesSearch && matchesType && matchesCategory && matchesConc && matchesPrice;
+        return matchesSearch && matchesType && matchesCategory && matchesGender && matchesConc && matchesPrice;
     });
 
     // Ordenamiento
@@ -191,6 +248,9 @@ function renderProducts() {
         const isSoldOut = Boolean(product.soldOut);
         const isComingSoon = Boolean(product.comingSoon);
         const isDisabled = isSoldOut || isComingSoon || !defaultOpt;
+        
+        // Verificar si es unisex (tiene ambos géneros)
+        const isUnisex = Array.isArray(product.gender) && product.gender.length === 2 && product.gender.includes('Hombre') && product.gender.includes('Mujer');
         
         // Badges (Etiquetas)
         let badges = '';
@@ -245,6 +305,29 @@ function renderProducts() {
             <!-- Contenido -->
             <div class="p-5 flex-grow flex flex-col">
                 <div class="mb-1 text-[10px] text-gior-gold uppercase tracking-widest font-bold">${product.house}</div>
+                <div class="mb-2 flex flex-wrap gap-1">
+                    ${Array.isArray(product.gender) ? product.gender.map(g => {
+                        const isUnisexBadge = product.gender.length === 2 && product.gender.includes('Hombre') && product.gender.includes('Mujer');
+                        let styleClass = '';
+                        let styleAttr = '';
+                        
+                        if (isUnisexBadge) {
+                            styleClass = 'border';
+                            styleAttr = 'style="background-color: rgba(110, 231, 232, 0.15); border-color: oklch(77.7% .152 181.912); color: oklch(77.7% .152 181.912);"';
+                        } else {
+                            styleClass = {
+                                'Hombre': 'bg-blue-400/20 text-blue-300 border border-blue-400/50',
+                                'Mujer': 'bg-pink-300/20 text-pink-200 border border-pink-300/50'
+                            }[g] || 'bg-gray-800 text-gray-400';
+                        }
+                        
+                        const displayName = {
+                            'Hombre': 'Para Hombre',
+                            'Mujer': 'Para Mujeres'
+                        };
+                        return `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide ${styleClass}" ${styleAttr}>${displayName[g] || g}</span>`;
+                    }).join('') : ''}
+                </div>
                 <h3 class="text-white font-serif font-bold text-lg leading-tight mb-2 group-hover:text-gior-gold transition-colors truncate">${product.name}</h3>
                 <p class="text-gray-500 text-xs line-clamp-2 mb-4 h-8">${product.description}</p>
                 
@@ -367,6 +450,12 @@ function updateFilter(key, value, element) {
         } else { // unchecked
             state.filters.category = state.filters.category.filter(c => c !== value);
         }
+    } else if (key === 'gender') {
+        if (element) { // checked
+            state.filters.gender.push(value);
+        } else { // unchecked
+            state.filters.gender = state.filters.gender.filter(g => g !== value);
+        }
     } else if (key === 'concentration') {
         const btns = document.querySelectorAll('.filter-conc-btn');
         
@@ -439,7 +528,7 @@ if(sortSelect) {
 const resetBtn = document.getElementById('reset-filters');
 if(resetBtn) {
     resetBtn.addEventListener('click', () => {
-         state.filters = { search: "", type: [], category: [], concentration: null, maxPrice: CATALOG_MAX_PRICE };
+         state.filters = { search: "", type: [], category: [], gender: [], concentration: null, maxPrice: CATALOG_MAX_PRICE };
          state.currentPage = 1;
          // Reset UI elements
          document.getElementById('price-range').value = CATALOG_MAX_PRICE;

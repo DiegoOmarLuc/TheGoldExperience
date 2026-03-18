@@ -13,12 +13,15 @@ const productsBase = [
     //     notes: "Notas: ...", // string (opcional)
 
     //     // PRECIOS / VARIANTES (usa los que quieras)
-    //     price3: 20,   // number opcional
-    //     price5: 30,   // number opcional
-    //     price10: 55,  // number opcional
-    //     price15: 75,  // number opcional
-    //     price100: 150,// number opcional (también funciona)
-    //     pricefull: 280, // number opcional -> muestra "Botella Completa"
+    //     price3: 20,   // number opcional (3ml decant)
+    //     price5: 30,   // number opcional (5ml decant)
+    //     price10: 55,  // number opcional (10ml decant)
+    //     price15: 75,  // number opcional (15ml decant)
+    //     price100: 150,// number opcional (100ml decant, también funciona)
+    //     pricefull: 280, // number opcional -> muestra "Botella Completa" (sin especificar tamaño)
+    //     pricefull50: 250,  // number opcional -> "Botella Completa 50ml"
+    //     pricefull100: 350, // number opcional -> "Botella Completa 100ml"
+    //     pricefull200: 600, // number opcional -> "Botella Completa 200ml"
 
     //     // ESTADO DEL PRODUCTO
     //     soldOut: false,    // true = Vendido (no permite comprar)
@@ -30,6 +33,12 @@ const productsBase = [
     //     rare: false,      // true = badge Rare
     //     rarity: "comun", // comun | raro | legendario (mystery boxes)
     //     discount: 0,      // número opcional si usas sale
+    //     
+    //     // GÉNERO (Array - puede tener uno o más valores)
+    //     gender: ["Hombre"], // Array: ["Hombre"] | ["Mujer"] | ["Hombre", "Mujer"]
+    //                         // - ["Hombre"]: muestra "Para Hombre" en azul agua
+    //                         // - ["Mujer"]: muestra "Para Mujeres" en rosa pastel
+    //                         // - ["Hombre", "Mujer"]: muestra ambos (para unisex)
 
     //     // IMAGEN / EXTRAS
     //     imgUrl: "https://...", // string URL imagen (obligatorio)
@@ -51,8 +60,9 @@ const productsBase = [
         concentration: "EDP",
         description: "Elegancia nocturna y especiada. Un clon sobresaliente con una salida picante y secado avainillado.",
         notes: "Pimienta Negra, Piña, Tabaco, Café, Vainilla.",
-        pricefull: 170,
+        pricefull100: 170,
         rarity: "comun",
+        gender: ["Hombre"],
         imgUrl: "https://amanahamh.net/cdn/shop/files/Asad-Bourbon-100ml-Perfume-Eau-de-Parfum-Lattafa_1a9e2a07-ee83-430b-8376-af88782071b0.jpg?v=1735475303",
         sale: true,
         discount: 10,
@@ -70,14 +80,15 @@ const productsBase = [
     { 
         id: 11, 
         name: "Mandarine Sky", 
-        house: "Pendora Scents / Paris Corner",
+        house: "Armaf",
         category: "Arabe",
         type: "Botella Sellada",
         concentration: "EDP",
         description: "Una fragancia dulce y juguetona con un caramelo adictivo y un toque cítrico vibrante.",
         notes: "Mandarina, Caramelo, Haba Tonka, Salvia, Vetiver.",
-        pricefull: 170,
+        pricefull100: 170,
         rarity: "comun",
+        gender: ["Hombre"],
         imgUrl: "https://www.khanelkhaliliusa.com/cdn/shop/files/Screenshot_2025-07-02_at_4.42.48_PM.png?v=1751489053",
         accordBars: [
             { name: "Dulce", color: "#e91e63", width: 100 },
@@ -96,8 +107,9 @@ const productsBase = [
         concentration: "EDP",
         description: "Un batido de fresa y vainilla esponjoso, tropical y ultra femenino.",
         notes: "Orquídea, Heliotropo, Frutas tropicales, Vainilla, Almizcle.",
-        pricefull: 150,
+        pricefull100: 150,
         rarity: "comun",
+        gender: ["Mujer"],
         imgUrl: "https://www.intenseoud.com/cdn/shop/files/21_b67cc975-e856-43db-b935-6f91b4412a60.jpg?v=1728326293",
         topSeller: true,
         accordBars: [
@@ -110,15 +122,16 @@ const productsBase = [
     },
     { 
         id: 13, 
-        name: "Bade'e Al Oud Sublime", 
+        name: "Sublime", 
         house: "Lattafa",
         category: "Arabe",
         type: "Botella Sellada",
         concentration: "EDP",
         description: "Una explosión frutal de manzana y lichi con un fondo floral y amaderado elegante.",
         notes: "Manzana, Lichi, Rosa, Ciruela, Musgo, Vainilla.",
-        pricefull: 150,
+        pricefull100: 150,
         rarity: "comun",
+        gender: ["Hombre", "Mujer"],
         imgUrl: "https://m.media-amazon.com/images/I/61lQASNGZ0L.jpg",
         accordBars: [
             { name: "Afrutado", color: "#e84393", width: 100 },
@@ -137,8 +150,9 @@ const productsBase = [
         concentration: "EDP",
         description: "Un postre hecho perfume. Caramelo, leche y miel que te envuelven en un aura gourmand irresistible.",
         notes: "Caramelo, Leche, Azúcar, Miel, Flores Blancas, Vainilla.",
-        pricefull: 160,
+        pricefull100: 160,
         rarity: "raro",
+        gender: ["Mujer"],
         imgUrl: "https://www.mybeautyexchange.com/cdn/shop/files/lattafa-eclaire-eau-de-parfum-34-oz-8224663.webp?v=1773420170&width=1000",
         topSeller: true,
         accordBars: [
@@ -151,15 +165,16 @@ const productsBase = [
     },
     { 
         id: 15, 
-        name: "Bade'e Al Oud Honor & Glory", 
+        name: "Oud Honor & Glory", 
         house: "Lattafa",
         category: "Arabe",
         type: "Botella Sellada",
         concentration: "EDP",
         description: "Un crème brûlée de piña exquisito y cremoso, con un toque especiado brillante.",
         notes: "Piña, Crème Brûlée, Canela, Pimienta Negra, Vainilla, Sándalo.",
-        pricefull: 150,
+        pricefull100: 150,
         rarity: "comun",
+        gender: ["Hombre", "Mujer"],
         imgUrl: "https://m.media-amazon.com/images/I/71luMCs9ruL.jpg",
         accordBars: [
             { name: "Dulce", color: "#f1c40f", width: 100 },
@@ -178,8 +193,9 @@ const productsBase = [
         concentration: "EDP",
         description: "Frescura limpia y elegante con carácter moderno para uso diario.",
         notes: "Cítricos, notas acuáticas, almizcle y maderas suaves.",
-        pricefull: 260,
+        pricefull75: 260,
         rarity: "comun",
+        gender: ["Hombre", "Mujer"],
         imgUrl: "https://perfumescardales.com.ar/wp-content/uploads/2024/12/aqua-dubai-1.jpg",
         accordBars: [
             { name: "Acuático", color: "#00bcd4", width: 100 },
@@ -196,8 +212,9 @@ const productsBase = [
         concentration: "EDP",
         description: "Aroma acuático versátil, limpio y con buena proyección.",
         notes: "Pomelo, notas marinas, lavanda y maderas.",
-        pricefull: 170,
+        pricefull100: 170,
         rarity: "comun",
+        gender: ["Hombre", "Mujer"],
         imgUrl: "https://guateselectos.com/cdn/shop/files/IMG-3508.jpg?v=1770395270&width=1214",
         accordBars: [
             { name: "Acuático", color: "#00bcd4", width: 95 },
@@ -214,8 +231,9 @@ const productsBase = [
         concentration: "EDP",
         description: "Frutal premium de alto impacto con estela intensa y larga duración.",
         notes: "Cítricos sicilianos, frutas mediterráneas, ámbar y almizcle blanco.",
-        pricefull: 980,
+        pricefull100: 980,
         rarity: "legendario",
+        gender: ["Hombre", "Mujer"],
         imgUrl: "https://parfumexquis.us/cdn/shop/files/XerjoffErbaPura_2.jpg?v=1742329168&width=2048",
         accordBars: [
             { name: "Afrutado", color: "#e74c3c", width: 100 },
