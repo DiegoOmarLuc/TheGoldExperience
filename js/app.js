@@ -157,7 +157,7 @@ function renderFilters() {
     const genderContainer = document.getElementById('filters-gender');
     if(genderContainer) {
         const displayName = {
-            'Hombre': 'Para Hombre',
+            'Hombre': 'Para Hombres',
             'Mujer': 'Para Mujeres'
         };
         genderContainer.innerHTML = genders.map(g => `
@@ -306,27 +306,26 @@ function renderProducts() {
             <div class="p-5 flex-grow flex flex-col">
                 <div class="mb-1 text-[10px] text-gior-gold uppercase tracking-widest font-bold">${product.house}</div>
                 <div class="mb-2 flex flex-wrap gap-1">
-                    ${Array.isArray(product.gender) ? product.gender.map(g => {
+                    ${Array.isArray(product.gender) ? (() => {
                         const isUnisexBadge = product.gender.length === 2 && product.gender.includes('Hombre') && product.gender.includes('Mujer');
-                        let styleClass = '';
-                        let styleAttr = '';
-                        
                         if (isUnisexBadge) {
-                            styleClass = 'border';
-                            styleAttr = 'style="background-color: rgba(110, 231, 232, 0.15); border-color: oklch(77.7% .152 181.912); color: oklch(77.7% .152 181.912);"';
+                            const styleAttr = 'style="background-color: rgba(110, 231, 232, 0.15); border-color: oklch(77.7% .152 181.912); color: oklch(77.7% .152 181.912);"';
+                            return `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide border" ${styleAttr}>Para hombres y mujeres</span>`;
                         } else {
-                            styleClass = {
-                                'Hombre': 'bg-blue-400/20 text-blue-300 border border-blue-400/50',
-                                'Mujer': 'bg-pink-300/20 text-pink-200 border border-pink-300/50'
-                            }[g] || 'bg-gray-800 text-gray-400';
+                            return product.gender.map(g => {
+                                const styleClass = {
+                                    'Hombre': 'bg-blue-400/20 text-blue-300 border border-blue-400/50',
+                                    'Mujer': 'bg-pink-300/20 text-pink-200 border border-pink-300/50'
+                                }[g] || 'bg-gray-800 text-gray-400';
+                                
+                                const displayName = {
+                                    'Hombre': 'Para Hombres',
+                                    'Mujer': 'Para Mujeres'
+                                };
+                                return `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide ${styleClass}">${displayName[g] || g}</span>`;
+                            }).join('');
                         }
-                        
-                        const displayName = {
-                            'Hombre': 'Para Hombre',
-                            'Mujer': 'Para Mujeres'
-                        };
-                        return `<span class="inline-block px-2 py-0.5 rounded text-[9px] font-semibold tracking-wide ${styleClass}" ${styleAttr}>${displayName[g] || g}</span>`;
-                    }).join('') : ''}
+                    })() : ''}
                 </div>
                 <h3 class="text-white font-serif font-bold text-lg leading-tight mb-2 group-hover:text-gior-gold transition-colors truncate">${product.name}</h3>
                 <p class="text-gray-500 text-xs line-clamp-2 mb-4 h-8">${product.description}</p>
@@ -821,7 +820,7 @@ function handleCheckoutWhatsApp() {
     }
 
     const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-    let message = "*¡Hola Essence d'Or!*\nQuisiera realizar el siguiente pedido:\n\n";
+    let message = "*¡Hola D'or Essence!*\nQuisiera realizar el siguiente pedido:\n\n";
 
     state.cart.forEach((item) => {
         const variantLabel = item.variantType === 'bottle' ? `Botella ${item.label}` : `Decant ${item.label}`;

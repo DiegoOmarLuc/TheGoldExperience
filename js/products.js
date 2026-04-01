@@ -35,10 +35,10 @@ const productsBase = [
     //     discount: 0,      // número opcional si usas sale
     //     
     //     // GÉNERO (Array - puede tener uno o más valores)
-    //     gender: ["Hombre"], // Array: ["Hombre"] | ["Mujer"] | ["Hombre", "Mujer"]
-    //                         // - ["Hombre"]: muestra "Para Hombre" en azul agua
+    //     gender: ["Hombre"], // Array: ["Hombre"] | ["Mujer"] | ["Hombres y Mujeres"]
+    //                         // - ["Hombre"]: muestra "Para Hombres" en azul agua
     //                         // - ["Mujer"]: muestra "Para Mujeres" en rosa pastel
-    //                         // - ["Hombre", "Mujer"]: muestra ambos (para unisex)
+    //                         // - ["Hombre", "Mujer"]: muestra "Para hombres y mujeres" (para unisex) en cyan
 
     //     // IMAGEN / EXTRAS
     //     imgUrl: "https://...", // string URL imagen (obligatorio)
